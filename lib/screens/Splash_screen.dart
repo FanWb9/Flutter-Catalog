@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'Login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  
   @override
   void initState() {
     super.initState();
@@ -17,12 +19,16 @@ class _SplashScreenState extends State<SplashScreen>
       duration: Duration(seconds: 3),
       vsync: this,
     )..repeat();
-    Timer(Duration(seconds: 4), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-      );
-    });
+    _loadEnvAndNavigate();
+  }
+
+  Future<void> _loadEnvAndNavigate() async {
+    await dotenv.load(fileName: "assets/.env");
+    await Future.delayed(Duration(seconds: 4));
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => LoginScreen()),
+    );
   }
 
   @override
@@ -38,60 +44,12 @@ class _SplashScreenState extends State<SplashScreen>
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade900, Colors.blueAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: Colors.white, 
         ),
         child: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset("assets/k.png", width: 100, height: 100),
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Transform.rotate(
-                    angle: _controller.value * 6.28,
-                    child: child,
-                  );
-                },
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  child: CustomPaint(painter: CirclePainter()),
-                ),
-              ),
-            ],
-          ),
+          child: Image.asset("assets/k.png", width: 150, height: 150),
         ),
       ),
     );
   }
-}
-
-class CirclePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) { 
-    final paint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(
-      Rect.fromCircle(
-        center: Offset(size.width / 2, size.height / 2),
-        radius: size.width / 2,
-      ),
-      0,
-      3.14 * 1.5,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true; 
 }

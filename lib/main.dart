@@ -4,7 +4,6 @@ import 'screens/Splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await dotenv.load(fileName: "assets/.env");
   runApp(MyApp());
 }
 

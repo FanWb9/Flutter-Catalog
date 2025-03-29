@@ -217,11 +217,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 20),
 
                   // Tombol Google Sign-In
-                  SignInButton(
-                    Buttons.Google,
-                    text: "Sign in with Google",
-                    onPressed: _handleGoogleSignIn,
-                  ),
+                    Align(
+                    alignment: Alignment.center,
+                    child: SignInButton(
+                      Buttons.Google,
+                      text: "Sign in with Google",
+                      onPressed: _handleGoogleSignIn,
+                    ),
+                    ),
 
                   SizedBox(height: 15),
 
