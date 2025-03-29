@@ -12,21 +12,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordContoller = TextEditingController();
   final ApiServices apiServices = ApiServices();
+  String? emailEror;
   bool isLoading = false;
   bool _openPassword = true;
 
   Future<void> _register() async {
+    setState(() {
+      isLoading = true;
+      emailEror = null;
+    });
     final result = await apiServices.register(
       nameController.text,
       emailController.text,
       passwordContoller.text,
     );
-    if (result != null) {
+    if (result != null && result["status"] == "email_exist") {
+      setState(() {
+        emailEror = "Email already exists";
+        isLoading = false;
+      });
+    } else if (result != null) {
+      setState(() {
+        isLoading = false;
+      });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => LoginScreen()),
       );
     } else {
+      setState(() {
+        isLoading = false;
+      });
       print("Register Gagal");
     }
   }
@@ -68,13 +84,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: emailController,
                     decoration: InputDecoration(
                       labelText: "Email",
                       prefixIcon: Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorText: emailEror,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: emailEror != null ? Colors.red : Colors.blue,
+                          width: 3,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: emailEror != null ? Colors.red : Colors.grey,
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
