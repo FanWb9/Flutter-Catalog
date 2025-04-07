@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../Services/api_services.dart';
 import 'Login_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -10,11 +13,30 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordContoller = TextEditingController();
+  final TextEditingController dateOfBirthController = TextEditingController();
+
   final ApiServices apiServices = ApiServices();
   String? emailEror;
   bool isLoading = false;
   bool _openPassword = true;
+
+  Future<void> _selectedDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      helpText: 'pilih tanggal lahir',
+     // locale: const Locale("id","ID"),
+    );
+    if (picked != null){
+      setState(() {
+        dateOfBirthController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  }
 
   Future<void> _register() async {
     setState(() {
@@ -25,6 +47,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       nameController.text,
       emailController.text,
       passwordContoller.text,
+      phoneController.text,
+      dateOfBirthController.text,
     );
     if (result != null && result["status"] == "email_exist") {
       setState(() {
@@ -64,6 +88,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(icon: Icon(Icons.arrow_back),
+                    onPressed: (){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => LoginScreen()),
+                      );
+                    },
+                    ),
+                  ),
                   Text(
                     "REGISTER",
                     style: TextStyle(
@@ -108,6 +143,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(15),
+                    ],
+                    decoration: InputDecoration(
+                      labelText: "Phone Number",
+                      prefixIcon: Icon(Icons.phone),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: dateOfBirthController,
+                    decoration: InputDecoration(
+                      labelText: "Date of Birth",
+                      prefixIcon: Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.calendar_today),
+                        onPressed: () => _selectedDate(context),
+                      ),
+                    ),
+                    readOnly: true,
                   ),
                   SizedBox(height: 20),
                   TextField(

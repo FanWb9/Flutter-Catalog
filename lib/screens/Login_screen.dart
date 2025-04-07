@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final ApiServices apiServices = ApiServices();
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email'],
+    clientId: dotenv.env['GOOGLE_CLIENT_ID_IOS'],
     serverClientId: dotenv.env['GOOGLE_SERVER_CLIENT_ID'],
   );
   bool isLoading = false;
@@ -109,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Welcome Back!",
+                    "Welcome Back",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,

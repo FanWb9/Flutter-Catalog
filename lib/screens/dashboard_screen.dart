@@ -42,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text("Dashboard"),
+        automaticallyImplyLeading: false,
         centerTitle: true,
       ),
     ),
